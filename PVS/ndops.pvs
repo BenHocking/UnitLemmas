@@ -1,0 +1,50 @@
+ndops: THEORY
+BEGIN
+
+  NDOP: TYPE = [a: real, da: posreal, b: real, db: posreal -> boolean];
+
+  NDLT: {op: NDOP |
+    FORALL(a: real, da: posreal, b: real, db: posreal):
+      ((a + da) < (b - db)) IMPLIES
+        op(a, da, b, db) = TRUE AND
+      ((a - da) >= (b + db)) IMPLIES
+        op(a, da, b, db) = FALSE};
+
+  NDLT_antireflexive: LEMMA
+    FORALL(a: real, da: posreal):
+      NDLT(a, da, a, da);
+
+  NDLT_transitive: LEMMA
+    FORALL(a: real, da: posreal, b: real, db: posreal, c: real, dc: posreal):
+      (NDLT(a, da, b, db) AND NDLT(b, db, c, dc))
+      IMPLIES NDLT(a, da, c, dc);
+
+  NDLTE: {op: NDOP |
+    FORALL(a: real, da: posreal, b: real, db: posreal):
+      ((a + da) <= (b - db)) IMPLIES
+        op(a, da, b, db) = TRUE AND
+      ((a - da) > (b + db)) IMPLIES
+        op(a, da, b, db) = FALSE};
+
+  NDEQ: {op: NDOP |
+    FORALL(a: real, da: posreal, b: real, db: posreal):
+      ((a + da) < (b - db)) IMPLIES
+          op(a, da, b, db) = FALSE AND
+      ((a - da) > (b + db)) IMPLIES
+          op(a, da, b, db) = FALSE};
+
+  NDGT: {op: NDOP |
+    FORALL(a: real, da: posreal, b: real, db: posreal):
+      ((a - da) > (b + db)) IMPLIES
+        op(a, da, b, db) = TRUE AND
+      ((a + da) <= (b - db)) IMPLIES
+        op(a, da, b, db) = FALSE};
+
+  NDGTE: {op: NDOP |
+    FORALL(a: real, da: posreal, b: real, db: posreal):
+      ((a - da) >= (b + db)) IMPLIES
+        op(a, da, b, db) = TRUE AND
+      ((a + da) < (b - db)) IMPLIES
+        op(a, da, b, db) = FALSE};
+
+END ndops

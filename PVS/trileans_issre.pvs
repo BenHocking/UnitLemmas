@@ -1,0 +1,192 @@
+trileans_issre: THEORY
+BEGIN
+
+  tril: TYPE = {TRIKNOWNTRUE, TRIKNOWNFALSE, TRIUNKNOWN};
+
+  % Ways to check values of trils
+  t?(t: tril): boolean = (t = TRIKNOWNTRUE);
+  f?(t: tril): boolean = (t = TRIKNOWNFALSE);
+  u?(t: tril): boolean = (t = TRIUNKNOWN);
+
+  % T=T   -> T
+  % T=F   -> F
+  % T=U   -> U
+  % F=T   -> F
+  % F=F   -> T
+  % F=U   -> U
+  % U=any -> U
+  eqt(a, b: tril): tril =
+    IF t?(a) AND t?(b) THEN
+      TRIKNOWNTRUE
+    ELSIF f?(a) AND f?(b) THEN
+      TRIKNOWNTRUE
+    ELSIF u?(a) OR u?(b) THEN
+      TRIUNKNOWN
+    ELSE
+      TRIKNOWNFALSE
+    ENDIF;
+
+  % While eqt(a, b) being TRIKNOWNTRUE implies a = b…
+  bool_eqt_implies_eq: LEMMA
+    FORALL(a, b: tril):
+      t?(eqt(a, b)) IMPLIES (a = b);
+
+  % a = b does not imply that eqt(a, b) is TRIKNOWNTRUE
+  eq_not_implies_bool_eqt: LEMMA
+    % Exception is when both are TRIUNKNOWN
+    EXISTS(a, b: tril):
+      ¬((a = b) IMPLIES t?(eqt(a, b)));
+
+  known_equals_reflexive: LEMMA
+    t?(eqt(TRIKNOWNTRUE, TRIKNOWNTRUE)) AND
+    t?(eqt(TRIKNOWNFALSE, TRIKNOWNFALSE));
+
+  % PVS parses this as the tril = operator
+  tril_equals_not_reflexive: LEMMA
+    EXISTS(a: tril): ¬t?(eqt(a,a));
+  tril_equals_not_unreflexive: LEMMA
+    FORALL(a: tril): ¬f?(eqt(a,a));
+
+  nott(a: tril): tril =
+    IF t?(a) THEN
+      TRIKNOWNFALSE
+    ELSIF f?(a) THEN
+      TRIKNOWNTRUE
+    ELSE 
+      TRIUNKNOWN
+    ENDIF;
+
+  nott_self_inverse: LEMMA
+    FORALL(a: tril): nott(nott(a)) = a;
+
+  andt(a, b: tril): tril =
+    IF f?(a) OR f?(b) THEN
+       TRIKNOWNFALSE
+    ELSIF t?(a) AND t?(b) THEN
+       TRIKNOWNTRUE
+    ELSE
+       TRIUNKNOWN
+    ENDIF;
+
+  andt_symm: LEMMA
+    FORALL(a, b: tril): andt(a, b) = andt(b, a);
+
+  andt_self_is_self: LEMMA
+    FORALL(a: tril): andt(a, a) = a;
+
+  andt_false_is_false: LEMMA
+    FORALL(a: tril): andt(a, TRIKNOWNFALSE) = TRIKNOWNFALSE;
+
+  andt_true_is_self: LEMMA
+    FORALL(a: tril): andt(a, TRIKNOWNTRUE) = a;
+
+  andt_assoc: LEMMA
+    FORALL(a, b, c: tril): andt(a, andt(b, c)) = andt(andt(a, b), c);
+
+  ort(a, b: tril): tril =
+    IF t?(a) OR t?(b) THEN
+      TRIKNOWNTRUE
+    ELSIF f?(a) AND f?(b) THEN
+      TRIKNOWNFALSE
+    ELSE
+      TRIUNKNOWN 
+    ENDIF;
+
+  % Law of excluded middle does NOT "knowingly" hold
+  % I.e., we don't get back a state of *known* true
+  not_excluded_middle: LEMMA
+    EXISTS(a: tril): ¬(t?(ort(a, nott(a))));
+
+  ort_symm: LEMMA
+    FORALL(a, b: tril): ort(a, b) = ort(b, a);
+
+  ort_self_is_self: LEMMA
+    FORALL(a: tril): ort(a, a) = a;
+
+  ort_true_is_true: LEMMA
+    FORALL(a: tril): ort(a, TRIKNOWNTRUE) = TRIKNOWNTRUE;
+
+  ort_false_is_self: LEMMA
+    FORALL(a: tril): ort(a, TRIKNOWNFALSE) = a;
+
+  ort_assoc: LEMMA
+    FORALL(a, b, c: tril): ort(a, ort(b, c)) = ort(ort(a, b), c);
+
+  DeMorgan1: LEMMA
+    FORALL(a, b: tril):
+      nott(ort(a, b)) = andt(nott(a), nott(b));
+
+  DeMorgan2: LEMMA
+    FORALL(a, b: tril):
+      nott(andt(a, b)) = ort(nott(a), nott(b));
+
+  excluded_middle: AXIOM
+    FORALL(a: tril): t?(ort(a, nott(a)));
+
+  impliest(a, b: tril): tril =
+    IF f?(a) OR t?(b) THEN
+       % false -> false = true
+       % false -> true = true
+       % false -> unknowable = true
+       % unknowable -> true = true
+       % true -> true = true
+       TRIKNOWNTRUE 
+    ELSIF t?(a) AND f?(b) THEN
+       TRIKNOWNFALSE
+    ELSE
+       % unkowable->unknowable = unknowable
+       % true -> unknowable = unknowable
+       % unknowable -> false = unknowable
+       TRIUNKNOWN
+    ENDIF;
+
+  % Contrary to regular implication, tril implication is not always reflexive
+  impliest_not_reflexive: LEMMA
+    EXISTS(a: tril): ¬t?(impliest(a, a));
+
+  false_implies_true: LEMMA
+    FORALL(a: tril): t?(impliest(TRIKNOWNFALSE, a));
+
+  anything_implies_true: LEMMA
+    FORALL(a: tril): t?(impliest(a, TRIKNOWNTRUE));
+
+  implies_trans_with_bool: LEMMA
+    FORALL(a, b, c: tril):
+      t?(andt(impliest(a, b), impliest(b, c))) ⇒ t?(impliest(a, c));
+
+  implies_not_fully_trans: LEMMA
+    EXISTS(a, b, c: tril):
+      ¬t?(impliest(andt(impliest(a, b), impliest(b, c)), impliest(a, c)));
+
+  %converse implication
+  whent(a, b: tril): tril = impliest(b, a);
+
+  ifft(a, b: tril): tril =
+    andt(impliest(a, b), impliest(b, a));
+
+  ifft_alt(a, b: tril): tril = 
+    IF u?(a) OR u?(b) THEN
+      TRIUNKNOWN
+    ELSIF (a = b) THEN
+      TRIKNOWNTRUE
+    ELSE
+      TRIKNOWNFALSE
+    ENDIF;              
+
+  ifft_bidirectional: LEMMA
+    FORALL (a, b: tril):
+      ifft(a, b) = ifft_alt(a, b);
+
+  % Contrary to regular iff, tril iff is not always reflexive
+  ifft_not_reflexive: LEMMA
+    EXISTS(a: tril): ¬t?(ifft(a, a))
+
+  ifft_trans_with_bool: LEMMA
+    FORALL(a, b, c: tril):
+      t?(andt(ifft(a, b), ifft(b, c))) IMPLIES t?(ifft(a, c));
+
+  iff_not_fully_trans: LEMMA
+    EXISTS(a, b, c: tril):
+      ¬t?(impliest(andt(ifft(a, b), ifft(b, c)), ifft(a, c)));
+
+END trileans_issre
