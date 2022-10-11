@@ -51,3 +51,33 @@ E.g., an area calculation for arbitrary polygons returning 4 when the polygon re
 
 **Logical Contradiction**: Can the specification be used to prove false is true? If a specification can be used to
 prove false, then we know a flaw exists.
+
+# BibTex References #
+
+## Unit Lemma Paper ##
+
+```
+@inproceedings{hocking2020unit,
+  title={Unit Lemmas for Detecting Requirement and Specification Flaws},
+  author={Hocking, Ashlie B and Rowanhill, Jonathan C and Di Vito, Ben L},
+  booktitle={2020 IEEE International Symposium on Software Reliability Engineering Workshops (ISSREW)},
+  pages={163--164},
+  year={2020},
+  organization={IEEE}
+}
+```
+
+## GitHub repository ##
+
+```
+@misc{hocking2022unit,
+  title={Unit Lemmas},
+  url={https://github.com/BenHocking/UnitLemmas},
+  urldate={10/11/2022},
+  author={Hocking, Ashlie B.},
+  year={2022}, month={Oct}
+}
+```
+# Change Log #
+
+10/11/2022, Ben Hocking, added invariance, specialization/generalization, and exemplar unit lemma types
