@@ -1,4 +1,4 @@
-# Unit Lemmas
+# Unit Lemmas #
 
 The purpose of this repository is to provide advocation for unit lemmas and to catalog types of unit lemmas.
 
@@ -6,6 +6,12 @@ The original ISSRE paper on this topic is unit-lemmas.pdf from 2020. The accompa
 be found at UnitLemmas.mp4. A shorter 2-minute "pitch talk" can be found at UnitLemmas_pitch.mp4. The slides
 can be found at UnitLemmas.pptx. Finally, some PVS files related to the paper can be found in the PVS directory.
 Additional PVS files might be added there later to provide more detailed examples.
+
+In short, *unit lemmas* are to formal specifications what *unit tests* are to software. They are designed to
+supplement other forms of verification of formal requirements and specifications, by proving whether formal
+definitions (e.g., of functions) have the properties one would expect of them (e.g., one would expect `=`
+to be reflexive, and `<` to be irreflexive). Unit lemmas have the additional benefit that they will often
+be useful in proving the high-level properties for which the system is designed to possess.
 
 Since the publication of that paper, we have identified additional types of unit lemmas. This repository has
 been created so that others might also add other types of unit lemmas that we have not considered.
@@ -34,9 +40,9 @@ expect (e.g., 0) when two of the objects are identical?
 
 **Invariance**: Are there invariances in a function such that the function returns the same value under that invariance?
 For example, if calculating the area of a polygon, should the function return the same value under rotation (yes),
-translation (yes), reflection (maybe)? *NB: Permutations, either of the inputs such that (A, B, C) becomes (B, C, A)*
-*or within an input such as a list could be a type of invariance for a function, and **symmetry** is a special case*
-*of those permutations.*
+translation (yes), reflection (maybe)? *NB: **Permutations**, either of the inputs such that `(A, B, C)` becomes*
+*`(B, C, A)` or within an input (such as a list), could be a type of invariance for a function, and **symmetry** is*
+*a special case of those permutations.*
 
 **Specialization/Generalization**: For functions `f` and `g`, is `f` a special case of `g`? E.g., if `f` defines
 exponentiation over integers and `g` defines exponentiation over reals, then should `f(x, y) = g(x, y)` for all
