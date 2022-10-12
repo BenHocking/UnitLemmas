@@ -34,7 +34,9 @@ expect (e.g., 0) when two of the objects are identical?
 
 **Invariance**: Are there invariances in a function such that the function returns the same value under that invariance?
 For example, if calculating the area of a polygon, should the function return the same value under rotation (yes),
-translation (yes), reflection (maybe)?
+translation (yes), reflection (maybe)? *NB: Permutations, either of the inputs such that (A, B, C) becomes (B, C, A)*
+*or within an input such as a list could be a type of invariance for a function, and **symmetry** is a special case*
+*of those permutations.*
 
 **Specialization/Generalization**: For functions `f` and `g`, is `f` a special case of `g`? E.g., if `f` defines
 exponentiation over integers and `g` defines exponentiation over reals, then should `f(x, y) = g(x, y)` for all
