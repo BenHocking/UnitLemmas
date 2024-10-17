@@ -16,9 +16,23 @@ be useful in proving the high-level properties for which the system is designed 
 Since the publication of that paper, we have identified additional types of unit lemmas. This repository has
 been created so that others might also add other types of unit lemmas that we have not considered.
 
+Also note that with LLMs playing an increasing role in software production, formal proof of software correctness
+will become increasingly important. One can extrapolate that in the not-to-distant future, LLMs will assist
+formal methods experts in creating formal specifications, as well as proving properties over formal
+specifications. This future will have the following impact on unit lemmas:
+
+1. Unit lemmas will typically become much easier to prove.
+2. Unit lemmas will become a more critical tool for identifying flaws in tool-generated specifications.
+
 # Unit Lemma Classification #
 
+Note that **Totality** is not included in this list due to formal specification languages already requiring it.
+
 **Reflexivity/Irreflexivity**: For a *predicate* `p`, should `p(A, A)` return true (or false) for all `A`?
+
+**Idempotence**: For a *function* `f`, should `f(A, A)` return `A` for all `A`?
+
+**Idempotence with Composition**: For a *function* `f`, should `f(f(A))` return `f(A)` for all `A`?
 
 **Symmetry/Asymmetry**: For a *predicate* `p`, should `p(A, B, …)` return the same result as `p(B, A, …)`?
 Should `p(A, B, …)` return the opposite result as `p(B, A, …)`?
@@ -27,9 +41,6 @@ Should `p(A, B, …)` return the opposite result as `p(B, A, …)`?
 
 **Commutativity**: For a function `f`, should `f(A, B, …)` return the same result as `f(B, A, …)`?
 
-**Degeneracy**: For a function over two or more objects of the same type, is there a consistent result to
-expect (e.g., 0) when two of the objects are identical?
-
 **Identity**: For a function `f`, is there an `I` such that `f(A, I) = f(I, A) = A` for all `A`?
 
 **Absorption**: For a function `f`, is there a `0` (e.g., `false`) such that `f(A, 0) = f(0, A) = 0` for all `A`?
@@ -37,6 +48,17 @@ expect (e.g., 0) when two of the objects are identical?
 **Associativity**: For a function `f`, should `f(A, f(B, C, …), …) = f(f(A, B, …), C, …)` for all `A`, `B`, `C`?
 
 **Inverse**: For a function `f`, is there an inverse function `g` such that for all inputs `A`, `f(g(A))=g(f(A))=A`?
+
+**Monotonicity**: For a function `f`, does an increase in the inputs imply an increase (or decrease) in the result?
+I.e., does A < B necessarily imply f(A) < f(B), f(A) ≤ f(B), f(A) > f(B), or f(A) ≥ f(B)?
+
+**Linearity**: As a special case of monotonicity, does a function `f` have the property that for all a, b, X, Y,
+f(aX + bY) = af(X) + bf(Y)?
+
+**Stability**: For a function `f`, does a small change to its inputs necessarily imply a small change to its output?
+
+**Degeneracy**: For a function over two or more objects of the same type, is there a consistent result to
+expect (e.g., 0) when two of the objects are identical? (See also: *Reflexivity/Irreflexivity* and *Idempotence*)
 
 **Invariance**: Are there invariances in a function such that the function returns the same value under that invariance?
 For example, if calculating the area of a polygon, should the function return the same value under rotation (yes),
@@ -80,14 +102,15 @@ prove false, then we know a flaw exists.
 ## GitHub repository ##
 
 ```
-@misc{hocking2022unit,
+@misc{hocking2024unit,
   title={Unit Lemmas},
   url={https://github.com/BenHocking/UnitLemmas},
-  urldate={10/11/2022},
+  urldate={10/17/2024},
   author={Hocking, Ashlie B.},
-  year={2022}, month={Oct}
+  year={2024}, month={Oct}
 }
 ```
 # Change Log #
 
-10/11/2022, Ben Hocking, added invariance, specialization/generalization, and exemplar unit lemma types
+* 10/11/2022, Ben Hocking, added invariance, specialization/generalization, and exemplar unit lemma types
+* 10/17/2024, Ben Hocking, added idempotence (inc. with composition), monotonicity, linearity, stability, and notes on LLMs and totality.
